@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hava Durumu / Weather</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            color: #000080;
+            background-color: #AFEEEE;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: 100vh;
+        }
+        .app {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background: #AFEEEE;
+            height: 100vh;
+            position: relative;
+        }
+        .header {
+            padding: 50px 20px 30px 20px;
+        }
+        .header h1 {
+            font-size: 50px;
+            color: #000080;
+        }
+        .header input {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            border: 0;
+            outline: 0;
+            border-bottom: 2px solid #000080;
+            text-align: center;
+            font-size: 20px;
+            color: #778899;
+        }
+        .city {
+            font-size: 35px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        .temp {
+            font-size: 100px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .desc {
+            font-size: 25px;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+        .minmax {
+            font-size: 24px;
+        }
+        .footer {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 14px;
+            color: #778899;
+        }
+        .logo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <img class="logo" src="https://cdn-icons-png.flaticon.com/512/1555/1555512.png" alt="Logo">
+        <div class="header">
+            <h1>Hava Durumu</h1>
+            <input type="text" id="searchBar" placeholder="Şehir giriniz / Type the city">
+        </div>
+        <div class="content">
+            <div class="city"></div>
+            <div class="temp"></div>
+            <div class="desc"></div>
+            <div class="minmax"></div>
+        </div>
+        <div class="footer">
+            Created by Bengü D.
+        </div>
+    </div>
+
+    <script>
+        const url = 'https://api.openweathermap.org/data/2.5/';
+        const key = 'c3b8602db166eb4495088b24e41d84ea';
+
+        const setQuery = (e) => {
+            if (e.keyCode == '13') {
+                getResult(searchBar.value);
+            }
+        };
+
+        const getResult = (cityName) => {
+            let query = `${url}weather?q=${cityName}&appid=${key}&units=metric&lang=tr`;
+            fetch(query)
+            .then(weather => {
+                return weather.json();
+            })
+            .then(displayResult);
+        };
+
+        const displayResult = (result) => {
+            let city = document.querySelector('.city');
+            city.innerText = `${result.name}, ${result.sys.country}`;
+
+            let temp = document.querySelector('.temp');
+            temp.innerText = `${Math.round(result.main.temp)}°C`;
+
+            let desc = document.querySelector('.desc');
+            desc.innerText = result.weather[0].description;
+
+            let minmax = document.querySelector('.minmax');
+            minmax.innerText = `${Math.round(result.main.temp_min)}°C / ${Math.round(result.main.temp_max)}°C`;
+        };
+
+        const searchBar = document.getElementById('searchBar');
+        searchBar.addEventListener('keypress', setQuery);
+    </script>
+</body>
+</html>
